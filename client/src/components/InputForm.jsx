@@ -17,114 +17,54 @@ const GlobalStyles = () => (
       overflow: hidden;
     }
 
-    /* PAGE */
     .url-page {
-      height: 100vh;
-      width: 100vw;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
+      height: 100vh; width: 100vw;
+      display: grid; grid-template-columns: 1fr 1fr;
       position: relative;
-      overflow: hidden;
-      background: #080a0f;
-      transition: background 0.4s ease;
+      /* ✅ FIX: was overflow:hidden — now visible so panels can scroll */
+      overflow: visible;
+      background: #080a0f; transition: background 0.4s ease;
     }
     .url-page.light { background: #0a1628; }
 
-    /* dot grid */
     .url-page::after {
-      content: '';
-      position: fixed;
-      inset: 0;
+      content: ''; position: fixed; inset: 0;
       background-image: radial-gradient(circle, rgba(0,255,200,0.07) 1px, transparent 1px);
-      background-size: 30px 30px;
-      pointer-events: none;
-      z-index: 0;
+      background-size: 30px 30px; pointer-events: none; z-index: 0;
     }
     .url-page.light::after {
       background-image: radial-gradient(circle, rgba(100,160,255,0.1) 1px, transparent 1px);
     }
 
-    /* TOGGLE */
-    .toggle-btn {
-      position: fixed;
-      top: 20px; right: 24px;
-      z-index: 200;
-      display: flex; align-items: center; gap: 6px;
-      padding: 7px 14px;
-      border-radius: 999px;
-      border: 1px solid rgba(0,255,180,0.25);
-      background: rgba(255,255,255,0.04);
-      backdrop-filter: blur(12px);
-      cursor: pointer;
-      font-family: 'Fira Code', monospace;
-      font-size: 11px; font-weight: 500;
-      letter-spacing: 0.08em;
-      color: rgba(255,255,255,0.55);
-      transition: all 0.25s ease;
-    }
-    .toggle-btn:hover {
-      border-color: rgba(0,255,180,0.6);
-      color: #00ffb4;
-      box-shadow: 0 0 16px rgba(0,255,180,0.15);
-    }
-    .url-page.light .toggle-btn {
-      border-color: rgba(96,165,250,0.35);
-      color: rgba(180,210,255,0.7);
-    }
-    .url-page.light .toggle-btn:hover { border-color: #60a5fa; color: #93c5fd; }
-
-    /* LEFT PANEL */
+    /* LEFT PANEL — never grows, always centred */
     .left-panel {
-      position: relative;
-      z-index: 10;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: flex-start;
-      padding: 60px 56px;
-      overflow: hidden;
+      position: relative; z-index: 10;
+      height: 100vh;
+      display: flex; flex-direction: column;
+      justify-content: center; align-items: flex-start;
+      padding: 60px 56px; overflow: hidden;
     }
     .left-panel::before {
-      content: '';
-      position: absolute;
-      width: 500px; height: 500px;
-      border-radius: 50%;
+      content: ''; position: absolute;
+      width: 500px; height: 500px; border-radius: 50%;
       background: radial-gradient(circle, rgba(0,255,180,0.1), transparent 65%);
-      top: -120px; left: -160px;
-      pointer-events: none;
+      top: -120px; left: -160px; pointer-events: none;
     }
-    .url-page.light .left-panel::before {
-      background: radial-gradient(circle, rgba(59,130,246,0.18), transparent 65%);
-    }
+    .url-page.light .left-panel::before { background: radial-gradient(circle, rgba(59,130,246,0.18), transparent 65%); }
     .left-panel::after {
-      content: '';
-      position: absolute;
-      width: 300px; height: 300px;
-      border-radius: 50%;
+      content: ''; position: absolute;
+      width: 300px; height: 300px; border-radius: 50%;
       background: radial-gradient(circle, rgba(168,85,247,0.1), transparent 65%);
-      bottom: -60px; right: -40px;
-      pointer-events: none;
+      bottom: -60px; right: -40px; pointer-events: none;
     }
-    .url-page.light .left-panel::after {
-      background: radial-gradient(circle, rgba(99,102,241,0.14), transparent 65%);
-    }
-
-    .brand-tag {
-      font-size: 10px; font-weight: 600;
-      letter-spacing: 0.2em; text-transform: uppercase;
-      color: rgba(0,255,180,0.5);
-      margin-bottom: 16px;
-    }
-    .url-page.light .brand-tag { color: rgba(96,165,250,0.6); }
+    .url-page.light .left-panel::after { background: radial-gradient(circle, rgba(99,102,241,0.14), transparent 65%); }
 
     .brand-title {
       font-family: 'Bebas Neue', sans-serif;
       font-size: clamp(64px, 7vw, 96px);
       line-height: 0.92; letter-spacing: 0.04em;
       background: linear-gradient(135deg, #00ffb4 0%, #00c8ff 55%, #a855f7 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
       margin-bottom: 18px;
     }
     .url-page.light .brand-title {
@@ -134,12 +74,10 @@ const GlobalStyles = () => (
 
     .brand-desc {
       font-size: 12.5px; font-weight: 300; line-height: 1.8;
-      color: rgba(255,255,255,0.33);
-      max-width: 360px; margin-bottom: 24px;
+      color: rgba(255,255,255,0.33); max-width: 360px; margin-bottom: 24px;
     }
     .url-page.light .brand-desc { color: rgba(160,200,255,0.5); }
 
-    /* ── Feature pills ── */
     .feature-list { display: flex; flex-direction: column; gap: 9px; margin-bottom: 28px; }
     .feature-item {
       display: flex; align-items: flex-start; gap: 12px;
@@ -153,30 +91,21 @@ const GlobalStyles = () => (
       box-shadow: 0 0 8px rgba(0,255,180,0.5);
     }
     .url-page.light .feature-dot { background: #60a5fa; box-shadow: 0 0 8px rgba(96,165,250,0.5); }
-    .feature-sub {
-      font-size: 10px; color: rgba(255,255,255,0.2);
-      letter-spacing: 0.06em; margin-top: 1px;
-    }
+    .feature-sub { font-size: 10px; color: rgba(255,255,255,0.2); letter-spacing: 0.06em; margin-top: 1px; }
     .url-page.light .feature-sub { color: rgba(147,197,253,0.35); }
 
-    /* ── Live stats row ── */
     .stats-row { display: flex; gap: 0; margin-bottom: 8px; width: 100%; }
     .stat-item {
-      flex: 1;
-      display: flex; flex-direction: column; gap: 5px;
+      flex: 1; display: flex; flex-direction: column; gap: 5px;
       padding: 14px 16px;
       border: 1px solid rgba(0,255,180,0.1);
-      background: rgba(0,255,180,0.03);
-      transition: background 0.2s;
+      background: rgba(0,255,180,0.03); transition: background 0.2s;
     }
     .stat-item:first-child { border-radius: 10px 0 0 10px; }
     .stat-item:last-child  { border-radius: 0 10px 10px 0; }
     .stat-item + .stat-item { border-left: none; }
     .stat-item:hover { background: rgba(0,255,180,0.06); }
-    .url-page.light .stat-item {
-      border-color: rgba(96,165,250,0.15);
-      background: rgba(96,165,250,0.03);
-    }
+    .url-page.light .stat-item { border-color: rgba(96,165,250,0.15); background: rgba(96,165,250,0.03); }
     .url-page.light .stat-item:hover { background: rgba(96,165,250,0.07); }
 
     .stat-num {
@@ -186,268 +115,165 @@ const GlobalStyles = () => (
       animation: countIn 0.4s ease both;
     }
     .url-page.light .stat-num { color: #60a5fa; }
-    .stat-label {
-      font-size: 8.5px; letter-spacing: 0.14em; text-transform: uppercase;
-      color: rgba(255,255,255,0.25);
-    }
+    .stat-label { font-size: 8.5px; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.25); }
     .url-page.light .stat-label { color: rgba(147,197,253,0.4); }
 
-    /* Skeleton shimmer for stats */
     .stat-num-skeleton {
       height: 26px; width: 60px; border-radius: 4px;
-      background: linear-gradient(90deg,
-        rgba(0,255,180,0.06) 0%, rgba(0,255,180,0.14) 50%, rgba(0,255,180,0.06) 100%
-      );
-      background-size: 200% auto;
-      animation: shimmer 1.5s linear infinite;
+      background: linear-gradient(90deg, rgba(0,255,180,0.06) 0%, rgba(0,255,180,0.14) 50%, rgba(0,255,180,0.06) 100%);
+      background-size: 200% auto; animation: shimmer 1.5s linear infinite;
     }
     .url-page.light .stat-num-skeleton {
-      background: linear-gradient(90deg,
-        rgba(96,165,250,0.07) 0%, rgba(96,165,250,0.16) 50%, rgba(96,165,250,0.07) 100%
-      );
+      background: linear-gradient(90deg, rgba(96,165,250,0.07) 0%, rgba(96,165,250,0.16) 50%, rgba(96,165,250,0.07) 100%);
       background-size: 200% auto;
     }
 
-    /* Live dot */
-    .live-row {
-      display: flex; align-items: center; gap: 7px;
-      margin-bottom: 20px;
-    }
+    .live-row { display: flex; align-items: center; gap: 7px; margin-bottom: 20px; }
     .live-dot {
-      display: inline-block;
-      width: 6px; height: 6px; border-radius: 50%;
-      background: #00ffb4;
-      animation: livePulse 2s ease-in-out infinite;
+      display: inline-block; width: 6px; height: 6px; border-radius: 50%;
+      background: #00ffb4; animation: livePulse 2s ease-in-out infinite;
     }
     .url-page.light .live-dot { background: #60a5fa; }
-    .live-label {
-      font-size: 9px; letter-spacing: 0.18em;
-      color: rgba(0,255,180,0.45);
-    }
+    .live-label { font-size: 9px; letter-spacing: 0.18em; color: rgba(0,255,180,0.45); }
     .url-page.light .live-label { color: rgba(96,165,250,0.5); }
 
-    @keyframes livePulse {
-      0%, 100% { opacity: 1; box-shadow: 0 0 5px currentColor; }
-      50%       { opacity: 0.35; box-shadow: none; }
-    }
-    @keyframes countIn {
-      from { opacity: 0; transform: translateY(6px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-    @keyframes shimmer {
-      0%   { background-position: -200% center; }
-      100% { background-position:  200% center; }
-    }
+    @keyframes livePulse { 0%, 100% { opacity: 1; box-shadow: 0 0 5px currentColor; } 50% { opacity: 0.35; box-shadow: none; } }
+    @keyframes countIn  { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes shimmer  { 0% { background-position: -200% center; } 100% { background-position: 200% center; } }
+    @keyframes spin     { to { transform: rotate(360deg); } }
+    @keyframes slideUp  { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 
-    /* Social */
     .social-links { display: flex; gap: 12px; margin-top: 4px; }
     .social-icon {
-      width: 30px; height: 30px;
-      display: flex; align-items: center; justify-content: center;
+      width: 30px; height: 30px; display: flex; align-items: center; justify-content: center;
       border-radius: 50%; text-decoration: none; font-size: 13px;
-      color: rgba(0,255,180,0.45);
-      border: 1px solid rgba(0,255,180,0.2);
-      transition: all 0.22s ease;
+      color: rgba(0,255,180,0.45); border: 1px solid rgba(0,255,180,0.2); transition: all 0.22s ease;
     }
-    .social-icon:hover {
-      color: #00ffb4; border-color: #00ffb4;
-      box-shadow: 0 0 12px rgba(0,255,180,0.45);
-      transform: translateY(-2px);
-    }
+    .social-icon:hover { color: #00ffb4; border-color: #00ffb4; box-shadow: 0 0 12px rgba(0,255,180,0.45); transform: translateY(-2px); }
     .url-page.light .social-icon { color: rgba(96,165,250,0.55); border-color: rgba(96,165,250,0.25); }
     .url-page.light .social-icon:hover { color: #93c5fd; border-color: #60a5fa; box-shadow: 0 0 12px rgba(96,165,250,0.45); }
 
     .left-footer {
       position: absolute; bottom: 26px;
       display: flex; flex-direction: column; align-items: flex-start; gap: 8px;
-      font-size: 10px; letter-spacing: 0.08em;
-      color: rgba(255,255,255,0.15);
+      font-size: 10px; letter-spacing: 0.08em; color: rgba(255,255,255,0.15);
     }
     .url-page.light .left-footer { color: rgba(160,200,255,0.3); }
     .left-footer span { color: #ff6b6b; }
 
-    /* vertical separator */
     .panel-divider {
-      position: absolute;
-      top: 0; bottom: 0; left: 50%; width: 1px;
-      background: linear-gradient(180deg,
-        transparent 0%, rgba(0,255,180,0.08) 20%,
-        rgba(0,255,180,0.14) 50%, rgba(0,255,180,0.08) 80%, transparent 100%
-      );
+      position: fixed; top: 0; bottom: 0; left: 50%; width: 1px;
+      background: linear-gradient(180deg, transparent 0%, rgba(0,255,180,0.08) 20%, rgba(0,255,180,0.14) 50%, rgba(0,255,180,0.08) 80%, transparent 100%);
       z-index: 5; pointer-events: none;
     }
     .url-page.light .panel-divider {
-      background: linear-gradient(180deg,
-        transparent 0%, rgba(96,165,250,0.1) 20%,
-        rgba(96,165,250,0.18) 50%, rgba(96,165,250,0.1) 80%, transparent 100%
-      );
+      background: linear-gradient(180deg, transparent 0%, rgba(96,165,250,0.1) 20%, rgba(96,165,250,0.18) 50%, rgba(96,165,250,0.1) 80%, transparent 100%);
     }
 
-    /* RIGHT PANEL */
+    /* ✅ RIGHT PANEL — KEY FIX
+       min-height: 100vh  → fills screen when short
+       height: auto        → grows naturally when QR appears
+       overflow-y: auto    → scrolls if it ever gets taller than viewport
+       justify-content: center inside a min-height wrapper keeps content centred
+       when small, but lets it expand downward when QR is added            */
     .right-panel {
       position: relative; z-index: 10;
-      display: flex; flex-direction: column; justify-content: center;
+      min-height: 100vh; height: auto;
+      display: flex; flex-direction: column;
+      justify-content: center;
       padding: 60px 56px;
+      overflow-y: auto;
     }
+    /* scrollbar styling */
+    .right-panel::-webkit-scrollbar { width: 3px; }
+    .right-panel::-webkit-scrollbar-track { background: transparent; }
+    .right-panel::-webkit-scrollbar-thumb { background: rgba(0,255,180,0.2); border-radius: 2px; }
+
     .right-panel::before {
-      content: '';
-      position: absolute;
+      content: ''; position: absolute;
       width: 350px; height: 350px; border-radius: 50%;
       background: radial-gradient(circle, rgba(0,200,255,0.07), transparent 65%);
-      bottom: -80px; right: -80px;
-      pointer-events: none;
+      bottom: -80px; right: -80px; pointer-events: none;
     }
 
-    .form-eyebrow {
-      font-size: 9px; font-weight: 600;
-      letter-spacing: 0.2em; text-transform: uppercase;
-      color: rgba(0,255,180,0.45); margin-bottom: 8px;
-    }
+    .form-eyebrow { font-size: 9px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(0,255,180,0.45); margin-bottom: 8px; }
     .url-page.light .form-eyebrow { color: rgba(96,165,250,0.55); }
-
-    .form-heading {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 32px; letter-spacing: 0.06em;
-      color: rgba(255,255,255,0.82); margin-bottom: 28px;
-    }
+    .form-heading { font-family: 'Bebas Neue', sans-serif; font-size: 32px; letter-spacing: 0.06em; color: rgba(255,255,255,0.82); margin-bottom: 28px; }
     .url-page.light .form-heading { color: rgba(200,220,255,0.88); }
 
     .field-group { margin-bottom: 18px; }
-
-    .field-label {
-      display: block; font-size: 9px; font-weight: 600;
-      letter-spacing: 0.16em; text-transform: uppercase;
-      color: rgba(0,255,180,0.55); margin-bottom: 7px;
-    }
+    .field-label { display: block; font-size: 9px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(0,255,180,0.55); margin-bottom: 7px; }
     .url-page.light .field-label { color: rgba(96,165,250,0.7); }
 
     .url-input {
-      width: 100%; padding: 12px 16px;
-      border-radius: 10px;
-      border: 1px solid rgba(255,255,255,0.07);
-      background: rgba(255,255,255,0.03);
-      color: rgba(255,255,255,0.88);
-      font-family: 'Fira Code', monospace; font-size: 13px;
+      width: 100%; padding: 12px 16px; border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.07); background: rgba(255,255,255,0.03);
+      color: rgba(255,255,255,0.88); font-family: 'Fira Code', monospace; font-size: 13px;
       outline: none; transition: all 0.2s ease;
     }
-    .url-page.light .url-input {
-      background: rgba(255,255,255,0.05);
-      border-color: rgba(96,165,250,0.18); color: #dbeafe;
-    }
+    .url-page.light .url-input { background: rgba(255,255,255,0.05); border-color: rgba(96,165,250,0.18); color: #dbeafe; }
     .url-input::placeholder { color: rgba(255,255,255,0.18); }
     .url-page.light .url-input::placeholder { color: rgba(147,197,253,0.3); }
-    .url-input:focus {
-      border-color: rgba(0,255,180,0.45);
-      background: rgba(0,255,180,0.03);
-      box-shadow: 0 0 0 3px rgba(0,255,180,0.07);
-    }
-    .url-page.light .url-input:focus {
-      border-color: rgba(96,165,250,0.55);
-      background: rgba(96,165,250,0.04);
-      box-shadow: 0 0 0 3px rgba(96,165,250,0.1);
-    }
+    .url-input:focus { border-color: rgba(0,255,180,0.45); background: rgba(0,255,180,0.03); box-shadow: 0 0 0 3px rgba(0,255,180,0.07); }
+    .url-page.light .url-input:focus { border-color: rgba(96,165,250,0.55); background: rgba(96,165,250,0.04); box-shadow: 0 0 0 3px rgba(96,165,250,0.1); }
     .url-input.error { border-color: rgba(255,80,80,0.45); box-shadow: 0 0 0 3px rgba(255,80,80,0.06); }
 
-    .helper-text {
-      font-size: 10px; margin-top: 6px;
-      color: rgba(255,255,255,0.2); letter-spacing: 0.04em;
-    }
+    .helper-text { font-size: 10px; margin-top: 6px; color: rgba(255,255,255,0.2); letter-spacing: 0.04em; }
     .url-page.light .helper-text { color: rgba(147,197,253,0.4); }
     .helper-text.error { color: rgba(255,110,110,0.8); }
 
     .code-row {
       display: flex; border-radius: 10px; overflow: hidden;
-      border: 1px solid rgba(255,255,255,0.07);
-      transition: border-color 0.2s, box-shadow 0.2s;
+      border: 1px solid rgba(255,255,255,0.07); transition: border-color 0.2s, box-shadow 0.2s;
     }
-    .code-row:focus-within {
-      border-color: rgba(0,255,180,0.4);
-      box-shadow: 0 0 0 3px rgba(0,255,180,0.06);
-    }
+    .code-row:focus-within { border-color: rgba(0,255,180,0.4); box-shadow: 0 0 0 3px rgba(0,255,180,0.06); }
     .url-page.light .code-row { border-color: rgba(96,165,250,0.18); }
-    .url-page.light .code-row:focus-within {
-      border-color: rgba(96,165,250,0.5);
-      box-shadow: 0 0 0 3px rgba(96,165,250,0.09);
-    }
+    .url-page.light .code-row:focus-within { border-color: rgba(96,165,250,0.5); box-shadow: 0 0 0 3px rgba(96,165,250,0.09); }
     .code-addon {
-      padding: 12px 14px;
-      background: rgba(0,255,180,0.04);
-      color: rgba(0,255,180,0.38);
+      padding: 12px 14px; background: rgba(0,255,180,0.04); color: rgba(0,255,180,0.38);
       font-family: 'Fira Code', monospace; font-size: 11.5px;
       border-right: 1px solid rgba(255,255,255,0.05);
       max-width: 52%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
       display: flex; align-items: center;
     }
-    .url-page.light .code-addon {
-      background: rgba(96,165,250,0.05);
-      color: rgba(96,165,250,0.5);
-      border-right-color: rgba(96,165,250,0.12);
-    }
+    .url-page.light .code-addon { background: rgba(96,165,250,0.05); color: rgba(96,165,250,0.5); border-right-color: rgba(96,165,250,0.12); }
     .code-input {
-      flex: 1; padding: 12px 14px;
-      background: rgba(255,255,255,0.025);
-      color: rgba(255,255,255,0.85);
-      font-family: 'Fira Code', monospace; font-size: 13px;
+      flex: 1; padding: 12px 14px; background: rgba(255,255,255,0.025);
+      color: rgba(255,255,255,0.85); font-family: 'Fira Code', monospace; font-size: 13px;
       border: none; outline: none;
     }
     .url-page.light .code-input { background: rgba(255,255,255,0.04); color: #dbeafe; }
     .code-input::placeholder { color: rgba(255,255,255,0.16); }
     .url-page.light .code-input::placeholder { color: rgba(147,197,253,0.28); }
 
-    .divider {
-      height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(0,255,180,0.08), transparent);
-      margin: 20px 0;
-    }
-    .url-page.light .divider {
-      background: linear-gradient(90deg, transparent, rgba(96,165,250,0.12), transparent);
-    }
+    .divider { height: 1px; background: linear-gradient(90deg, transparent, rgba(0,255,180,0.08), transparent); margin: 20px 0; }
+    .url-page.light .divider { background: linear-gradient(90deg, transparent, rgba(96,165,250,0.12), transparent); }
 
     .submit-btn {
-      width: 100%; padding: 13px;
-      border-radius: 10px; border: none; cursor: pointer;
+      width: 100%; padding: 13px; border-radius: 10px; border: none; cursor: pointer;
       font-family: 'Fira Code', monospace; font-size: 12px; font-weight: 600;
       letter-spacing: 0.14em; text-transform: uppercase;
       background: linear-gradient(135deg, #00ffb4 0%, #00d4ff 100%);
-      color: #080a0f; transition: all 0.2s ease;
-      position: relative; overflow: hidden;
+      color: #080a0f; transition: all 0.2s ease; position: relative; overflow: hidden;
     }
-    .submit-btn::after {
-      content: ''; position: absolute; inset: 0;
-      background: linear-gradient(135deg, rgba(255,255,255,0.18), transparent);
-      opacity: 0; transition: opacity 0.2s;
-    }
+    .submit-btn::after { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(255,255,255,0.18), transparent); opacity: 0; transition: opacity 0.2s; }
     .submit-btn:hover::after { opacity: 1; }
-    .submit-btn:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 8px 28px rgba(0,255,180,0.28), 0 2px 8px rgba(0,212,255,0.18);
-    }
+    .submit-btn:hover { transform: translateY(-1px); box-shadow: 0 8px 28px rgba(0,255,180,0.28), 0 2px 8px rgba(0,212,255,0.18); }
     .submit-btn:active { transform: translateY(0); }
     .submit-btn:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
 
-    .result-row {
-      display: flex; gap: 8px; margin-top: 14px;
-      animation: slideUp 0.3s ease;
-    }
-    @keyframes slideUp {
-      from { opacity: 0; transform: translateY(6px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
+    .result-row { display: flex; gap: 8px; margin-top: 14px; animation: slideUp 0.3s ease; }
     .result-input {
       flex: 1; padding: 11px 14px; border-radius: 9px;
-      border: 1px solid rgba(0,255,180,0.2);
-      background: rgba(0,255,180,0.03); color: #00ffb4;
+      border: 1px solid rgba(0,255,180,0.2); background: rgba(0,255,180,0.03); color: #00ffb4;
       font-family: 'Fira Code', monospace; font-size: 12px;
       outline: none; overflow: hidden; text-overflow: ellipsis;
     }
-    .url-page.light .result-input {
-      border-color: rgba(96,165,250,0.3);
-      background: rgba(96,165,250,0.05); color: #93c5fd;
-    }
+    .url-page.light .result-input { border-color: rgba(96,165,250,0.3); background: rgba(96,165,250,0.05); color: #93c5fd; }
+
     .copy-btn {
       padding: 11px 20px; border-radius: 9px;
-      border: 1px solid rgba(0,255,180,0.22); background: transparent;
-      color: rgba(0,255,180,0.65);
+      border: 1px solid rgba(0,255,180,0.22); background: transparent; color: rgba(0,255,180,0.65);
       font-family: 'Fira Code', monospace; font-size: 11px; font-weight: 600;
       letter-spacing: 0.08em; cursor: pointer; transition: all 0.2s ease; white-space: nowrap;
     }
@@ -457,29 +283,60 @@ const GlobalStyles = () => (
     .url-page.light .copy-btn:hover { background: rgba(96,165,250,0.08); border-color: #60a5fa; color: #bfdbfe; }
     .url-page.light .copy-btn.copied { background: rgba(96,165,250,0.12); border-color: #60a5fa; color: #bfdbfe; }
 
-    @keyframes spin { to { transform: rotate(360deg); } }
     .spinner {
       display: inline-block; width: 12px; height: 12px;
-      border: 2px solid rgba(8,10,15,0.25);
-      border-top-color: #080a0f; border-radius: 50%;
-      animation: spin 0.6s linear infinite;
+      border: 2px solid rgba(8,10,15,0.25); border-top-color: #080a0f;
+      border-radius: 50%; animation: spin 0.6s linear infinite;
       margin-right: 8px; vertical-align: middle;
     }
+
+    /* ── QR box ── */
+    .qr-box {
+      margin-top: 16px; padding: 16px 18px; border-radius: 12px;
+      background: rgba(0,255,180,0.03); border: 1px solid rgba(0,255,180,0.18);
+      display: flex; align-items: center; gap: 18px;
+      animation: slideUp 0.35s ease;
+    }
+    .url-page.light .qr-box { border-color: rgba(96,165,250,0.22); background: rgba(96,165,250,0.03); }
+
+    .qr-image {
+      /* ✅ white background baked in so dark-mode doesn't hide the QR pattern */
+      width: 108px; height: 108px; flex-shrink: 0;
+      border-radius: 8px;
+      background: #ffffff;
+      padding: 7px;
+      display: block;
+    }
+
+    .qr-info { display: flex; flex-direction: column; gap: 6px; flex: 1; min-width: 0; }
+    .qr-label { font-size: 9px; letter-spacing: 0.18em; color: rgba(0,255,180,0.5); text-transform: uppercase; }
+    .url-page.light .qr-label { color: rgba(96,165,250,0.55); }
+    .qr-hint { font-size: 11px; color: rgba(255,255,255,0.35); line-height: 1.6; }
+    .url-page.light .qr-hint { color: rgba(160,200,255,0.4); }
+    .qr-dl-btn {
+      margin-top: 4px; width: fit-content;
+      padding: 8px 16px; border-radius: 8px;
+      border: 1px solid rgba(0,255,180,0.25); background: transparent;
+      color: rgba(0,255,180,0.7);
+      font-family: 'Fira Code', monospace; font-size: 11px; font-weight: 600;
+      letter-spacing: 0.08em; cursor: pointer; transition: all 0.2s ease;
+    }
+    .qr-dl-btn:hover { background: rgba(0,255,180,0.08); border-color: rgba(0,255,180,0.55); color: #00ffb4; }
+    .url-page.light .qr-dl-btn { border-color: rgba(96,165,250,0.3); color: #93c5fd; }
+    .url-page.light .qr-dl-btn:hover { background: rgba(96,165,250,0.08); border-color: #60a5fa; }
   `}</style>
 );
 
-/* ── Animated number (counts up when value changes) ── */
+/* ── Animated number ── */
 const AnimatedNum = ({ value, loading }) => {
   const [display, setDisplay] = useState(null);
 
   useEffect(() => {
     if (value === null || value === undefined) return;
-    // For string values like "<50ms" just set directly
     if (typeof value === "string") { setDisplay(value); return; }
-    const start = display ?? 0;
     const end = value;
+    const start = display ?? 0;
     if (start === end) return;
-    const duration = 800;
     const steps = 28;
     const step = (end - start) / steps;
     let current = start;
@@ -489,31 +346,31 @@ const AnimatedNum = ({ value, loading }) => {
       current += step;
       if (count >= steps) { setDisplay(end); clearInterval(timer); }
       else { setDisplay(Math.round(current)); }
-    }, duration / steps);
+    }, 800 / steps);
     return () => clearInterval(timer);
   }, [value]);
 
   if (loading) return <div className="stat-num-skeleton" />;
-  return <div className="stat-num">{display !== null ? display.toLocaleString?.() ?? display : "—"}</div>;
+  return <div className="stat-num">{display !== null ? (display.toLocaleString?.() ?? display) : "—"}</div>;
 };
 
 /* ══════════════════════════════════════════════════════════════ */
 export const InputForm = ({ isDark }) => {
-  const [input, setInput]     = useState({ longUrl: "", urlCode: "" });
-  const [url, setUrl]         = useState("");
+  const [input, setInput]         = useState({ longUrl: "", urlCode: "" });
+  const [url, setUrl]             = useState("");
+  const [qrCode, setQrCode]       = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [isError, setIsError] = useState(false);
-  const [copied, setCopied]   = useState(false);
-  const [stats, setStats]     = useState(null);
+  const [isError, setIsError]     = useState(false);
+  const [copied, setCopied]       = useState(false);
+  const [stats, setStats]         = useState(null);
   const [statsLoading, setStatsLoading] = useState(true);
 
   const clientBaseUrl = typeof window !== "undefined" ? window.location.origin + "/" : "http://localhost:3000/";
 
-  /* ── Fetch live platform stats ── */
   useEffect(() => {
     axios.get("/api/url/dashboard-stats")
-      .then(res => { setStats(res.data); setStatsLoading(false); })
-      .catch(() => setStatsLoading(false));
+      .then(res  => { setStats(res.data); setStatsLoading(false); })
+      .catch(()  => setStatsLoading(false));
   }, []);
 
   const handleInputChange = (e) => {
@@ -533,9 +390,28 @@ export const InputForm = ({ isDark }) => {
   const handleSubmit = () => {
     if (!input.longUrl) { setIsError(true); setUrl("URL is required."); return; }
     setIsLoading(true);
+    setUrl("");
+    setQrCode(null);
     axios.post('/api/url/shorten', input)
-      .then(res => { setUrl(res.data.shortUrl); setIsLoading(false); })
-      .catch(err => { setUrl(err.response?.data?.error || "Something went wrong"); setIsLoading(false); });
+      .then(res => {
+        console.log("[NeuroLinker] shorten response:", res.data); // debug
+        setUrl(res.data.shortUrl);
+        setQrCode(res.data.qrCode ?? null);
+        setIsLoading(false);
+      })
+      .catch(err => {
+        setUrl(err.response?.data?.error || "Something went wrong");
+        setQrCode(null);
+        setIsLoading(false);
+      });
+  };
+
+  const handleDownloadQr = () => {
+    if (!qrCode) return;
+    const link = document.createElement("a");
+    link.href = qrCode;
+    link.download = "neurolinker-qr.png";
+    link.click();
   };
 
   return (
@@ -546,47 +422,29 @@ export const InputForm = ({ isDark }) => {
 
         {/* ════ LEFT ════ */}
         <div className="left-panel">
-
-          {/* Brand */}
           <div className="brand-title">NeuroLinker</div>
           <div className="brand-desc">
             Transform unwieldy links into clean, shareable URLs in seconds.
             Create custom aliases and get detailed analytics — all in one place.
           </div>
 
-          {/* Features */}
           <div className="feature-list">
-            <div className="feature-item">
-              <div className="feature-dot" />
-              <div>
-                <div>Instant link compression</div>
-                <div className="feature-sub">Shorten any URL in under 50ms</div>
+            {[
+              ["Instant link compression",    "Shorten any URL in under 50ms"],
+              ["Custom memorable aliases",     "Pick your own slug — e.g. /my-portfolio"],
+              ["Per-link analytics",           "Track total clicks, creation date & link age"],
+              ["One-click copy to clipboard",  "Share instantly — no extra steps"],
+            ].map(([title, sub]) => (
+              <div className="feature-item" key={title}>
+                <div className="feature-dot" />
+                <div>
+                  <div>{title}</div>
+                  <div className="feature-sub">{sub}</div>
+                </div>
               </div>
-            </div>
-            <div className="feature-item">
-              <div className="feature-dot" />
-              <div>
-                <div>Custom memorable aliases</div>
-                <div className="feature-sub">Pick your own slug — e.g. /my-portfolio</div>
-              </div>
-            </div>
-            <div className="feature-item">
-              <div className="feature-dot" />
-              <div>
-                <div>Per-link analytics</div>
-                <div className="feature-sub">Track total clicks, creation date &amp; link age</div>
-              </div>
-            </div>
-            <div className="feature-item">
-              <div className="feature-dot" />
-              <div>
-                <div>One-click copy to clipboard</div>
-                <div className="feature-sub">Share instantly — no extra steps</div>
-              </div>
-            </div>
+            ))}
           </div>
 
-          {/* ── Live stats ── */}
           <div className="live-row">
             <span className="live-dot" />
             <span className="live-label">LIVE PLATFORM DATA</span>
@@ -594,11 +452,11 @@ export const InputForm = ({ isDark }) => {
 
           <div className="stats-row">
             <div className="stat-item">
-              <AnimatedNum value={stats?.totalLinks} loading={statsLoading} />
+              <AnimatedNum value={stats?.totalLinks}       loading={statsLoading} />
               <div className="stat-label">Links Created</div>
             </div>
             <div className="stat-item">
-              <AnimatedNum value={stats?.totalRedirects} loading={statsLoading} />
+              <AnimatedNum value={stats?.totalRedirects}   loading={statsLoading} />
               <div className="stat-label">Total Redirects</div>
             </div>
             <div className="stat-item">
@@ -607,7 +465,6 @@ export const InputForm = ({ isDark }) => {
             </div>
           </div>
 
-          {/* Footer */}
           <div className="left-footer">
             <div>Made with <span>♥</span> by Vinay Chand Ramola</div>
             <div className="social-links">
@@ -663,12 +520,34 @@ export const InputForm = ({ isDark }) => {
             {isLoading ? <><span className="spinner" />Processing...</> : "→ Shorten URL"}
           </button>
 
+          {/* Short URL */}
           {url && (
             <div className="result-row">
               <input className="result-input" value={url} readOnly />
               <button className={`copy-btn${copied ? " copied" : ""}`} onClick={handleCopy}>
                 {copied ? "✓ Copied" : "Copy"}
               </button>
+            </div>
+          )}
+
+          {/* ✅ QR Code — always rendered if qrCode is truthy */}
+          {qrCode && (
+            <div className="qr-box">
+              <img
+                src={qrCode}
+                alt="QR Code for your shortened link"
+                className="qr-image"
+                onError={(e) => console.error("[NeuroLinker] QR img failed to load", e)}
+              />
+              <div className="qr-info">
+                <div className="qr-label">// QR Code</div>
+                <div className="qr-hint">
+                  Scan with any camera app to open your short link on any device.
+                </div>
+                <button className="qr-dl-btn" onClick={handleDownloadQr}>
+                  ↓ Download PNG
+                </button>
+              </div>
             </div>
           )}
         </div>

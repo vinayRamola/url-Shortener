@@ -2,6 +2,7 @@
 const validUrl = require("valid-url");
 const redisClient = require("../config/redis");
 const URLModel = require("../models/url.model");
+const QRCode = require("qrcode");
 
 const { getNextSequence, generateSecureCode } = require("../utils");
 
@@ -49,9 +50,16 @@ exports.shortenUrl = async (req, res) => {
 
     await newURL.save();
 
+    // ✅ Generate QR code (base64)
+    const qrCode = await QRCode.toDataURL(shortUrl, {
+      width: 300,
+      margin: 2,
+    });
+
     return res.status(201).json({
       shortUrl,
       urlCode: finalCode,
+      qrCode,
     });
 
   } catch (error) {
