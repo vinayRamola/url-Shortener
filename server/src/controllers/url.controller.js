@@ -1,6 +1,8 @@
 // src/controllers/url.controller.js
 const validUrl = require("valid-url");
+const redisClient = require("../config/redis");
 const URLModel = require("../models/url.model");
+
 const { getNextSequence, generateSecureCode } = require("../utils");
 
 const baseUrl = process.env.BASEURI;
@@ -61,21 +63,57 @@ exports.shortenUrl = async (req, res) => {
     return res.status(500).json({ error: "Server error" });
   }
 };
-exports.redirectUrl = async (req, res) => {
-  try {
-    const { code } = req.params;
 
+exports.redirectUrl = async (req, res) => {
+  const { code } = req.params;
+
+  try {
+    // 1️⃣ Try Redis cache first
+    const cachedUrl = await redisClient.get(`url:${code}`);
+
+    if (cachedUrl) {
+      try {
+        await redisClient.incr(`clicks:${code}`);
+      } catch (err) {
+        console.log("Redis click increment failed");
+      }
+
+      return res.redirect(302, cachedUrl);
+    }
+
+    // 2️⃣ If not in cache → fetch from DB
     const url = await URLModel.findOne({ urlCode: code });
 
     if (!url) {
       return res.status(404).json({ error: "URL not found" });
     }
 
-    url.clicks += 1;
-    await url.save();
+    // 3️⃣ Check expiry
+    if (url.expiresAt && new Date() > url.expiresAt) {
+      return res.status(410).json({ error: "Link expired" });
+    }
 
-    return res.redirect(url.longUrl);
+    // 4️⃣ Store in Redis cache
+    await redisClient.set(`url:${code}`, url.longUrl, {
+      EX: 60 * 60 // 1 hour TTL
+    });
+
+    // 5️⃣ Increment click counter in Redis
+    try {
+      await redisClient.incr(`clicks:${code}`);
+    } catch (err) {
+      // Fallback if Redis fails
+      await URLModel.updateOne(
+        { urlCode: code },
+        { $inc: { clicks: 1 } }
+      );
+    }
+
+    return res.redirect(302, url.longUrl);
+
   } catch (error) {
-    res.status(500).json({ error: "Server error" });
+    console.log(error);
+    return res.status(500).json({ error: "Server error" });
   }
 };
+

@@ -1,22 +1,29 @@
 const Counter = require("./models/counter.model");
 const crypto = require("crypto");
 
-async function getNextSequence(name) {
-    const counter = await Counter.findOneAndUpdate(
-        { _id: name },
-        { $inc: { sequence_value: 1 } },
-        { new: true, upsert: true }
-    );
+const BASE62 = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-    return counter.sequence_value;
+
+async function getNextSequence(counterName) {
+  const counter = await Counter.findByIdAndUpdate(
+    counterName,
+    { $inc: { sequence_value: 1 } },
+    { new: true, upsert: true }
+  );
+
+  return counter.sequence_value;
 }
 
-function generateSecureCode(id) {
-    return crypto
-        .createHash("sha256")
-        .update(id.toString() + process.env.SECRET_KEY)
-        .digest("base64url")   // URL safe encoding
-        .slice(0, 7);          // 7 character short code
+
+function generateSecureCode(num) {
+  let code = "";
+
+  while (num > 0) {
+    code = BASE62[num % 62] + code;
+    num = Math.floor(num / 62);
+  }
+
+  return code.padStart(6, "0");
 }
 
 module.exports = {
