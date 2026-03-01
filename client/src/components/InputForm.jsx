@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+// InputForm.jsx
+import React, { useState, useEffect } from "react";
 import axios from 'axios';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faGithub, faLinkedin, faXTwitter } from "@fortawesome/free-brands-svg-icons";
+import { faGithub, faLinkedin } from "@fortawesome/free-brands-svg-icons";
 
 const GlobalStyles = () => (
   <style>{`
@@ -79,7 +80,7 @@ const GlobalStyles = () => (
       display: flex;
       flex-direction: column;
       justify-content: center;
-      align-items: center;
+      align-items: flex-start;
       padding: 60px 56px;
       overflow: hidden;
     }
@@ -92,45 +93,6 @@ const GlobalStyles = () => (
       top: -120px; left: -160px;
       pointer-events: none;
     }
-      .social-links {
-    display: flex;
-    gap: 14px;
-    margin-top: 6px;
-    }
-
-.social-icon {
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  text-decoration: none;
-  font-size: 14px;
-  color: rgba(0,255,180,0.5);
-  border: 1px solid rgba(0,255,180,0.25);
-  transition: all 0.25s ease;
-}
-
-.social-icon:hover {
-  color: #00ffb4;
-  border-color: #00ffb4;
-  box-shadow: 0 0 14px rgba(0,255,180,0.5);
-  transform: translateY(-2px);
-}
-
-/* Light Mode */
-.url-page.light .social-icon {
-  color: rgba(96,165,250,0.6);
-  border-color: rgba(96,165,250,0.3);
-}
-
-.url-page.light .social-icon:hover {
-  color: #93c5fd;
-  border-color: #60a5fa;
-  box-shadow: 0 0 14px rgba(96,165,250,0.5);
-}
-      
     .url-page.light .left-panel::before {
       background: radial-gradient(circle, rgba(59,130,246,0.18), transparent 65%);
     }
@@ -163,7 +125,7 @@ const GlobalStyles = () => (
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
-      margin-bottom: 24px;
+      margin-bottom: 18px;
     }
     .url-page.light .brand-title {
       background: linear-gradient(135deg, #60a5fa 0%, #a5b4fc 55%, #c4b5fd 100%);
@@ -171,56 +133,136 @@ const GlobalStyles = () => (
     }
 
     .brand-desc {
-      font-size: 13px; font-weight: 300; line-height: 1.8;
+      font-size: 12.5px; font-weight: 300; line-height: 1.8;
       color: rgba(255,255,255,0.33);
-      max-width: 340px; margin-bottom: 36px;
+      max-width: 360px; margin-bottom: 24px;
     }
     .url-page.light .brand-desc { color: rgba(160,200,255,0.5); }
 
-    .feature-list { display: flex; flex-direction: column; gap: 10px; }
+    /* ── Feature pills ── */
+    .feature-list { display: flex; flex-direction: column; gap: 9px; margin-bottom: 28px; }
     .feature-item {
-      display: flex; align-items: center; gap: 12px;
-      font-size: 11px; letter-spacing: 0.06em;
-      color: rgba(255,255,255,0.38);
+      display: flex; align-items: flex-start; gap: 12px;
+      font-size: 11.5px; letter-spacing: 0.04em;
+      color: rgba(255,255,255,0.42); line-height: 1.5;
     }
     .url-page.light .feature-item { color: rgba(160,200,255,0.55); }
     .feature-dot {
       width: 6px; height: 6px; border-radius: 50%;
-      background: #00ffb4; flex-shrink: 0;
+      background: #00ffb4; flex-shrink: 0; margin-top: 5px;
       box-shadow: 0 0 8px rgba(0,255,180,0.5);
     }
     .url-page.light .feature-dot { background: #60a5fa; box-shadow: 0 0 8px rgba(96,165,250,0.5); }
+    .feature-sub {
+      font-size: 10px; color: rgba(255,255,255,0.2);
+      letter-spacing: 0.06em; margin-top: 1px;
+    }
+    .url-page.light .feature-sub { color: rgba(147,197,253,0.35); }
 
-    .stats-row { display: flex; gap: 28px; margin-top: 40px; }
-    .stat-item { display: flex; flex-direction: column; gap: 4px; }
+    /* ── Live stats row ── */
+    .stats-row { display: flex; gap: 0; margin-bottom: 8px; width: 100%; }
+    .stat-item {
+      flex: 1;
+      display: flex; flex-direction: column; gap: 5px;
+      padding: 14px 16px;
+      border: 1px solid rgba(0,255,180,0.1);
+      background: rgba(0,255,180,0.03);
+      transition: background 0.2s;
+    }
+    .stat-item:first-child { border-radius: 10px 0 0 10px; }
+    .stat-item:last-child  { border-radius: 0 10px 10px 0; }
+    .stat-item + .stat-item { border-left: none; }
+    .stat-item:hover { background: rgba(0,255,180,0.06); }
+    .url-page.light .stat-item {
+      border-color: rgba(96,165,250,0.15);
+      background: rgba(96,165,250,0.03);
+    }
+    .url-page.light .stat-item:hover { background: rgba(96,165,250,0.07); }
+
     .stat-num {
       font-family: 'Bebas Neue', sans-serif;
-      font-size: 28px; letter-spacing: 0.04em;
-      color: rgba(255,255,255,0.65); line-height: 1;
+      font-size: 26px; letter-spacing: 0.04em;
+      color: #00ffb4; line-height: 1;
+      animation: countIn 0.4s ease both;
     }
-    .url-page.light .stat-num { color: rgba(200,220,255,0.7); }
+    .url-page.light .stat-num { color: #60a5fa; }
     .stat-label {
-      font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase;
-      color: rgba(255,255,255,0.22);
+      font-size: 8.5px; letter-spacing: 0.14em; text-transform: uppercase;
+      color: rgba(255,255,255,0.25);
     }
     .url-page.light .stat-label { color: rgba(147,197,253,0.4); }
 
+    /* Skeleton shimmer for stats */
+    .stat-num-skeleton {
+      height: 26px; width: 60px; border-radius: 4px;
+      background: linear-gradient(90deg,
+        rgba(0,255,180,0.06) 0%, rgba(0,255,180,0.14) 50%, rgba(0,255,180,0.06) 100%
+      );
+      background-size: 200% auto;
+      animation: shimmer 1.5s linear infinite;
+    }
+    .url-page.light .stat-num-skeleton {
+      background: linear-gradient(90deg,
+        rgba(96,165,250,0.07) 0%, rgba(96,165,250,0.16) 50%, rgba(96,165,250,0.07) 100%
+      );
+      background-size: 200% auto;
+    }
+
+    /* Live dot */
+    .live-row {
+      display: flex; align-items: center; gap: 7px;
+      margin-bottom: 20px;
+    }
+    .live-dot {
+      display: inline-block;
+      width: 6px; height: 6px; border-radius: 50%;
+      background: #00ffb4;
+      animation: livePulse 2s ease-in-out infinite;
+    }
+    .url-page.light .live-dot { background: #60a5fa; }
+    .live-label {
+      font-size: 9px; letter-spacing: 0.18em;
+      color: rgba(0,255,180,0.45);
+    }
+    .url-page.light .live-label { color: rgba(96,165,250,0.5); }
+
+    @keyframes livePulse {
+      0%, 100% { opacity: 1; box-shadow: 0 0 5px currentColor; }
+      50%       { opacity: 0.35; box-shadow: none; }
+    }
+    @keyframes countIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes shimmer {
+      0%   { background-position: -200% center; }
+      100% { background-position:  200% center; }
+    }
+
+    /* Social */
+    .social-links { display: flex; gap: 12px; margin-top: 4px; }
+    .social-icon {
+      width: 30px; height: 30px;
+      display: flex; align-items: center; justify-content: center;
+      border-radius: 50%; text-decoration: none; font-size: 13px;
+      color: rgba(0,255,180,0.45);
+      border: 1px solid rgba(0,255,180,0.2);
+      transition: all 0.22s ease;
+    }
+    .social-icon:hover {
+      color: #00ffb4; border-color: #00ffb4;
+      box-shadow: 0 0 12px rgba(0,255,180,0.45);
+      transform: translateY(-2px);
+    }
+    .url-page.light .social-icon { color: rgba(96,165,250,0.55); border-color: rgba(96,165,250,0.25); }
+    .url-page.light .social-icon:hover { color: #93c5fd; border-color: #60a5fa; box-shadow: 0 0 12px rgba(96,165,250,0.45); }
+
     .left-footer {
-  position: absolute;
-  bottom: 28px;
-  font-size: 10px;
-  letter-spacing: 0.08em;
-  color: rgba(255,255,255,0.15);
-
-  display: flex;
-  flex-direction: column;   /* 👈 THIS makes it go to next line */
-  align-items: center;
-  gap: 8px;                 /* spacing between text and icons */
-}
-
-.url-page.light .left-footer {
-  color: rgba(160,200,255,0.3);
-}
+      position: absolute; bottom: 26px;
+      display: flex; flex-direction: column; align-items: flex-start; gap: 8px;
+      font-size: 10px; letter-spacing: 0.08em;
+      color: rgba(255,255,255,0.15);
+    }
     .url-page.light .left-footer { color: rgba(160,200,255,0.3); }
     .left-footer span { color: #ff6b6b; }
 
@@ -426,14 +468,53 @@ const GlobalStyles = () => (
   `}</style>
 );
 
-export const InputForm = () => {
-  const [input, setInput] = useState({ longUrl: "", urlCode: "" });
-  const [url, setUrl] = useState("");
+/* ── Animated number (counts up when value changes) ── */
+const AnimatedNum = ({ value, loading }) => {
+  const [display, setDisplay] = useState(null);
+
+  useEffect(() => {
+    if (value === null || value === undefined) return;
+    // For string values like "<50ms" just set directly
+    if (typeof value === "string") { setDisplay(value); return; }
+    const start = display ?? 0;
+    const end = value;
+    if (start === end) return;
+    const duration = 800;
+    const steps = 28;
+    const step = (end - start) / steps;
+    let current = start;
+    let count = 0;
+    const timer = setInterval(() => {
+      count++;
+      current += step;
+      if (count >= steps) { setDisplay(end); clearInterval(timer); }
+      else { setDisplay(Math.round(current)); }
+    }, duration / steps);
+    return () => clearInterval(timer);
+  }, [value]);
+
+  if (loading) return <div className="stat-num-skeleton" />;
+  return <div className="stat-num">{display !== null ? display.toLocaleString?.() ?? display : "—"}</div>;
+};
+
+/* ══════════════════════════════════════════════════════════════ */
+export const InputForm = ({ isDark }) => {
+  const [input, setInput]     = useState({ longUrl: "", urlCode: "" });
+  const [url, setUrl]         = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
-  const [isDark, setIsDark] = useState(true);
-  const [copied, setCopied] = useState(false);
-  const clientBaseUrl = typeof window !== "undefined" ? window.location.href : "http://localhost:3000/";
+  const [copied, setCopied]   = useState(false);
+  const [stats, setStats]     = useState(null);
+  const [statsLoading, setStatsLoading] = useState(true);
+
+  const clientBaseUrl = typeof window !== "undefined" ? window.location.origin + "/" : "http://localhost:3000/";
+
+  /* ── Fetch live platform stats ── */
+  useEffect(() => {
+    axios.get("/api/url/dashboard-stats")
+      .then(res => { setStats(res.data); setStatsLoading(false); })
+      .catch(() => setStatsLoading(false));
+  }, []);
 
   const handleInputChange = (e) => {
     const { id, value } = e.target;
@@ -463,74 +544,84 @@ export const InputForm = () => {
       <div className={`url-page${isDark ? "" : " light"}`}>
         <div className="panel-divider" />
 
-        <button className="toggle-btn" onClick={() => setIsDark(!isDark)}>
-          <span>{isDark ? "☀️" : "🌙"}</span>
-          {isDark ? "Light" : "Dark"}
-        </button>
-
-        {/* LEFT */}
+        {/* ════ LEFT ════ */}
         <div className="left-panel">
+
+          {/* Brand */}
           <div className="brand-title">NeuroLinker</div>
           <div className="brand-desc">
             Transform unwieldy links into clean, shareable URLs in seconds.
-            Create custom aliases and take control of your links.
+            Create custom aliases and get detailed analytics — all in one place.
           </div>
+
+          {/* Features */}
           <div className="feature-list">
-            {["Instant link compression", "Custom memorable aliases", "One-click copy to clipboard", "Clean, distraction-free interface"].map(f => (
-              <div className="feature-item" key={f}>
-                <div className="feature-dot" />{f}
+            <div className="feature-item">
+              <div className="feature-dot" />
+              <div>
+                <div>Instant link compression</div>
+                <div className="feature-sub">Shorten any URL in under 50ms</div>
               </div>
-            ))}
+            </div>
+            <div className="feature-item">
+              <div className="feature-dot" />
+              <div>
+                <div>Custom memorable aliases</div>
+                <div className="feature-sub">Pick your own slug — e.g. /my-portfolio</div>
+              </div>
+            </div>
+            <div className="feature-item">
+              <div className="feature-dot" />
+              <div>
+                <div>Per-link analytics</div>
+                <div className="feature-sub">Track total clicks, creation date &amp; link age</div>
+              </div>
+            </div>
+            <div className="feature-item">
+              <div className="feature-dot" />
+              <div>
+                <div>One-click copy to clipboard</div>
+                <div className="feature-sub">Share instantly — no extra steps</div>
+              </div>
+            </div>
           </div>
+
+          {/* ── Live stats ── */}
+          <div className="live-row">
+            <span className="live-dot" />
+            <span className="live-label">LIVE PLATFORM DATA</span>
+          </div>
+
           <div className="stats-row">
-            {[["2.4M", "Links Created"], ["99.9%", "Uptime"], ["<50ms", "Redirect"]].map(([n, l]) => (
-              <div className="stat-item" key={l}>
-                <div className="stat-num">{n}</div>
-                <div className="stat-label">{l}</div>
-              </div>
-            ))}
+            <div className="stat-item">
+              <AnimatedNum value={stats?.totalLinks} loading={statsLoading} />
+              <div className="stat-label">Links Created</div>
+            </div>
+            <div className="stat-item">
+              <AnimatedNum value={stats?.totalRedirects} loading={statsLoading} />
+              <div className="stat-label">Total Redirects</div>
+            </div>
+            <div className="stat-item">
+              <AnimatedNum value={stats?.avgRedirectSpeed ?? "<50ms"} loading={statsLoading} />
+              <div className="stat-label">Avg Speed</div>
+            </div>
           </div>
+
+          {/* Footer */}
           <div className="left-footer">
-            <div className="footer-text">
-                Made with <span>♥</span> by Vinay Chand Ramola
-            </div>
-
-
+            <div>Made with <span>♥</span> by Vinay Chand Ramola</div>
             <div className="social-links">
-                <a
-                href="https://github.com/vinayRamola/url-Shortener"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="social-icon"
-                aria-label="GitHub"
-                >
+              <a href="https://github.com/vinayRamola/url-Shortener" target="_blank" rel="noopener noreferrer" className="social-icon" aria-label="GitHub">
                 <FontAwesomeIcon icon={faGithub} />
-                </a>
-
-                <a
-                href="https://www.linkedin.com/in/vinay-chand-ramola-970061223/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="social-icon"
-                aria-label="LinkedIn"
-                >
+              </a>
+              <a href="https://www.linkedin.com/in/vinay-chand-ramola-970061223/" target="_blank" rel="noopener noreferrer" className="social-icon" aria-label="LinkedIn">
                 <FontAwesomeIcon icon={faLinkedin} />
-                </a>
-
-                {/* <a
-                href="https://twitter.com/yourusername"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="social-icon"
-                aria-label="Twitter"
-                >
-                <FontAwesomeIcon icon={faXTwitter} />
-                </a> */}
+              </a>
             </div>
-            </div>
+          </div>
         </div>
 
-        {/* RIGHT */}
+        {/* ════ RIGHT ════ */}
         <div className="right-panel">
           <div className="form-eyebrow">// get started</div>
           <div className="form-heading">Shorten Your Link</div>

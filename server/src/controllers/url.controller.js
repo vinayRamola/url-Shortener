@@ -15,11 +15,9 @@ exports.shortenUrl = async (req, res) => {
       return res.status(400).json({ error: "Invalid URL" });
     }
 
-    // If custom code provided → validate
     let finalCode;
 
     if (urlCode && urlCode.trim() !== "") {
-      // Only allow alphanumeric + - _
       const regex = /^[a-zA-Z0-9_-]+$/;
 
       if (!regex.test(urlCode)) {
@@ -28,7 +26,6 @@ exports.shortenUrl = async (req, res) => {
         });
       }
 
-      // Check if already taken
       const existingCode = await URLModel.findOne({ urlCode });
 
       if (existingCode) {
@@ -37,7 +34,6 @@ exports.shortenUrl = async (req, res) => {
 
       finalCode = urlCode;
     } else {
-      // Auto generate
       const id = await getNextSequence("urlCounter");
       finalCode = generateSecureCode(id);
     }
@@ -68,45 +64,34 @@ exports.redirectUrl = async (req, res) => {
   const { code } = req.params;
 
   try {
-    // 1️⃣ Try Redis cache first
     const cachedUrl = await redisClient.get(`url:${code}`);
 
     if (cachedUrl) {
       try {
         await redisClient.incr(`clicks:${code}`);
       } catch (err) {
-        console.log("Redis click increment failed");
+        console.log("Redis click increment failed — falling back to DB");
+        await URLModel.updateOne({ urlCode: code }, { $inc: { clicks: 1 } });
       }
-
       return res.redirect(302, cachedUrl);
     }
 
-    // 2️⃣ If not in cache → fetch from DB
     const url = await URLModel.findOne({ urlCode: code });
 
     if (!url) {
       return res.status(404).json({ error: "URL not found" });
     }
 
-    // 3️⃣ Check expiry
     if (url.expiresAt && new Date() > url.expiresAt) {
       return res.status(410).json({ error: "Link expired" });
     }
 
-    // 4️⃣ Store in Redis cache
-    await redisClient.set(`url:${code}`, url.longUrl, {
-      EX: 60 * 60 // 1 hour TTL
-    });
+    await redisClient.set(`url:${code}`, url.longUrl, { EX: 60 * 60 });
 
-    // 5️⃣ Increment click counter in Redis
     try {
       await redisClient.incr(`clicks:${code}`);
     } catch (err) {
-      // Fallback if Redis fails
-      await URLModel.updateOne(
-        { urlCode: code },
-        { $inc: { clicks: 1 } }
-      );
+      await URLModel.updateOne({ urlCode: code }, { $inc: { clicks: 1 } });
     }
 
     return res.redirect(302, url.longUrl);
@@ -117,3 +102,92 @@ exports.redirectUrl = async (req, res) => {
   }
 };
 
+exports.getAnalytics = async (req, res) => {
+  const { code } = req.params;
+
+  try {
+    const url = await URLModel.findOne({ urlCode: code });
+
+    if (!url) {
+      return res.status(404).json({ error: "URL not found" });
+    }
+
+    // ✅ FIX 2: Merge Redis click count (live) with MongoDB click count (persisted)
+    // Redis holds increments that haven't been flushed to DB yet
+    let redisClicks = 0;
+    try {
+      const raw = await redisClient.get(`clicks:${code}`);
+      redisClicks = raw ? parseInt(raw, 10) : 0;
+    } catch (err) {
+      console.log("Redis unavailable — using DB clicks only");
+    }
+
+    const totalClicks = url.clicks + redisClicks;
+
+    return res.status(200).json({
+      urlCode: url.urlCode,
+      longUrl: url.longUrl,
+      totalClicks,
+      createdAt: url.createdAt,
+      expiresAt: url.expiresAt || null,
+    });
+
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: "Server error" });
+  }
+};
+
+exports.getDashboardStats = async (req, res) => {
+  try {
+    // ✅ FIX 1: was `Url` (undefined) — changed to `URLModel`
+    const totalLinks = await URLModel.countDocuments();
+
+    const last24Hours = new Date(Date.now() - 24 * 60 * 60 * 1000);
+
+    const linksLast24Hours = await URLModel.countDocuments({
+      createdAt: { $gte: last24Hours },
+    });
+
+    const redirectAgg = await URLModel.aggregate([
+      {
+        $group: {
+          _id: null,
+          totalRedirects: { $sum: "$clicks" },
+        },
+      },
+    ]);
+
+    const dbRedirects =
+      redirectAgg.length > 0 ? redirectAgg[0].totalRedirects : 0;
+
+    // ✅ FIX 2: Also sum live Redis click counters so the dashboard
+    //    reflects redirects that haven't been flushed to MongoDB yet
+    let redisRedirects = 0;
+    try {
+      const keys = await redisClient.keys("clicks:*");
+      if (keys.length > 0) {
+        const values = await redisClient.mGet(keys);
+        redisRedirects = values.reduce(
+          (sum, v) => sum + (v ? parseInt(v, 10) : 0),
+          0
+        );
+      }
+    } catch (err) {
+      console.log("Redis unavailable — using DB redirect count only");
+    }
+
+    const totalRedirects = dbRedirects + redisRedirects;
+
+    res.json({
+      totalLinks,
+      linksLast24Hours,
+      totalRedirects,
+      avgRedirectSpeed: "<50ms",
+    });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to fetch stats" });
+  }
+};

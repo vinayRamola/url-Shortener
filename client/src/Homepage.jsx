@@ -1,10 +1,16 @@
-import React from 'react'
-import { Heading, Text } from "@chakra-ui/react";
+import React, { useState } from "react";
 import { InputForm } from "./components/InputForm";
+
+
 export default function Homepage() {
+  const [isDark, setIsDark] = useState(true);
+
   return (
     <>
-          <InputForm />
+      
+      <div style={{ marginTop: "70px" }}>
+        <InputForm isDark={isDark} />
+      </div>
     </>
-  )
+  );
 }
