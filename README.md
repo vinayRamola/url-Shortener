@@ -6,7 +6,7 @@ A secure and scalable URL Shortener application built using Node.js, Express, Mo
 
 ## 🏗 System Architecture (v1.0)
 
-![URL Shortener Architecture](client/src/docs/architecture.svg)
+![URL Shortener Architecture](client/src/docs/architecture_img.png)
 ---
 
 ## Features
